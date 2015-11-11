@@ -14,7 +14,8 @@ module VagrantPlugins
           # set up our environment for capistrano
           "DEPLOYMENT_USER" => @machine.ssh_info[:username],
           "SSH_IDENTITY" => @machine.ssh_info[:private_key_path].join(":"),
-          "HOSTS" => "#{@machine.ssh_info[:host]}:#{@machine.ssh_info[:port]}",
+          "HOSTS" => @machine.ssh_info[:host],
+          "SSH_PORT" => @machine.ssh_info[:port].to_s,
           "HIERA_ROOT" => File.expand_path(@config.hiera_root),
           "HIERA_CONFIG_PATH" => File.join(File.expand_path(@config.hiera_root),'hiera.yaml')
         }.merge(@config.environment)

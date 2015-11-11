@@ -19,17 +19,23 @@ vagrant plugin install vagrant-capistrano
       cap.hiera_root = '../hiera' 
     end
 
+The correct rubystring can be found using rvm current.
 This provisioner will set the following environment variables before executing capistrano:
 
     DEPLOYMENT_USER = 'vagrant' (or whatever the vagrant ssh user is set to)
     SSH_IDENTITY = private ssh key of the DEPLOYMENT_USER
-    HOSTS= IP address and port of the vagrant ssh daemon
+    HOSTS= IP address of the vagrant ssh daemon
+    SSH_PORT= Port of the vagrant ssh daemon
 
 In order for this plugin to successfully execute your capsitrano tasks, should your include the following in your Capfile (or deploy.rb):
 
     # required for vagrant
     set :ssh_options,   { keys: [ENV['SSH_IDENTITY']] } if ENV['SSH_IDENTITY']
     set :user,          ENV['DEPLOYMENT_USER'] || "deployment"
+
+In your deployment stage file:
+
+    server ENV['HOSTS'], user: ENV['DEPLOYMENT_USER'], roles: %w(web app db refresh_view), port: ENV['SSH_PORT']
 
 This provisioner will cd into the directory containing your Capfile, then perform the tasks listed in the cap.tasks array. If
 omitted, it defaults to:
